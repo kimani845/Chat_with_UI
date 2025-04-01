@@ -1,6 +1,18 @@
-const chatInput = document.querySelector('.chat-form__input textarea');
-const sendChatBtn = document.querySelector('.chat-form__button button');
-const chatbox = document.querySelector('.chatbox');
+document.addEventListener("DOMContentLoaded", function() {
+const chatInput = document.querySelector('textarea'); //selecting the textarea for user input
+const chatBtn = document.querySelector('.chatbtn'); //selecting the button to open the chatbox
+const sendChatBtn = document.querySelector('#sendBIN'); //selecting the button to send the message
+const cancelBtn = document.querySelector('.cancelbtn'); //selecting the button to cancel the chat
+const chatbox = document.querySelector('.chatbox'); //selecting the chatbox to display messages
+const chatboxBtn = document.querySelector('.chatboxbtn'); //selecting the button to open the chatbox
+// const sendChatBtn = document.querySelector('#sendBIN');
+
+    // Check if elements exist before adding event listeners
+    if (!sendChatBtn || !chatInput || !chatbox) {
+        console.error("❌ Error: One or more elements not found. Check your HTML structure.");
+        return;
+    }
+
 const apiKey = 'OPENAI_API_KEY '; //API KEY 
 
 const createChatLi = (message, className) => {
@@ -44,19 +56,29 @@ const generateResponse = (incomingChatLi) => {
         .finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
 };
 
+// A function to handle sendind of messages
 const handleChat = () => {
     let userMessage = chatInput.value.trim();
     if (!userMessage) return;
-
-    chatbox.appendChild(createChatLi(userMessage, "chat-outgoing"));
+    
+    // Append user message to chatbox
+    const chatLi = document.createElement('li');
+    chatLi.classList.add("chat", "chat-outgoing");
+    chatLi.innerHTML = `<p>${userMessage}</p>`;
+    chatbox.appendChild(chatLi);
     chatbox.scrollTo(0, chatbox.scrollHeight);
     chatInput.value = "";
 
+    // Simulate bot response
     setTimeout(() => {
-        const incomingChatLi = createChatLi("Typing...", "chat-incoming");
-        chatbox.appendChild(incomingChatLi);
+        const botReply = document.createElement('li');
+        botReply.classList.add("chat", "chat-incoming");
+        botReply.innerHTML = `<p>Typing...</p>`;
+        chatbox.appendChild(botReply);
+        // const incomingChatLi = createChatLi("Typing...", "chat-incoming");
+        chatbox.appendChild(botReply);
         chatbox.scrollTo(0, chatbox.scrollHeight);
-        generateResponse(incomingChatLi);
+        generateResponse(botReply);
     }, 1000);
 };
 
@@ -77,3 +99,4 @@ function cancel() {
         chatbotComplete.style.display = "none";
     }
 }
+});   
