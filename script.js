@@ -1,3 +1,6 @@
+// import { OPENAI_API_KEY } from './config.js'; // config.js
+// import OpenAI from "openai";
+// const client = new OpenAI();
 document.addEventListener("DOMContentLoaded", function() {
 const chatInput = document.querySelector('textarea'); //selecting the textarea for user input
 const chatBtn = document.querySelector('.chatbtn'); //selecting the button to open the chatbox
@@ -30,7 +33,7 @@ const generateResponse = (incomingChatLi) => {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`
+            Authorization: `Bearer ${OPENAI_API_KEY}`
         },
         body: JSON.stringify({
             model: "gpt-3.5-turbo",
@@ -70,6 +73,7 @@ const handleChat = () => {
     chatInput.value = "";
 
     // Simulate bot response
+
     setTimeout(() => {
         const botReply = document.createElement('li');
         botReply.classList.add("chat", "chat-incoming");
