@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description" content="This is a simple website for a Chatbot.">
-    <title>Simple Chat</title>
+    <title>AI Assistant Chat</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body class="flex items-center justify-center min-h-screen bg-gray-100">
-    <div class="w-96 bg-white rounded-lg shadow-lg overflow-hidden">
+
+    <!-- chatbot container -->
+    <div class="fixed bottom-4 right-4 w-80 bg-white rounded-lg shadow-lg overflow-hidden border border-gray-300">
+    <!-- <div class="w-96 bg-white rounded-lg shadow-lg overflow-hidden"> -->
         <header class="bg-teal-600 text-white text-center py-4 relative">
             <h2 class="text-lg font-semibold">Chatbot</h2>
             <span id="cross" onclick="cancel()" class="absolute top-4 right-4 cursor-pointer text-gray-300 hover:text-red-500">X</span>
@@ -28,7 +31,10 @@
             <button id="sendBIN" class="ml-2 bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700">Send</button>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script type = "module" src="script.js"></script>
+        <!-- I will load script.js file as a module for the API to function -->
+    <!-- <script type="module" src="script.js"></script>  -->
+
 </body> 
 </html>
 <!-- <script>

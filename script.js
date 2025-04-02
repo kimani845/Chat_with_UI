@@ -1,6 +1,6 @@
-// import { OPENAI_API_KEY } from './config.js'; // config.js
-// import OpenAI from "openai";
-// const client = new OpenAI();
+import { OPENAI_API_KEY } from './config.js'; // config.js
+import OpenAI from "openai";
+const client = new OpenAI();
 document.addEventListener("DOMContentLoaded", function() {
 const chatInput = document.querySelector('textarea'); //selecting the textarea for user input
 const chatBtn = document.querySelector('.chatbtn'); //selecting the button to open the chatbox
