@@ -2,11 +2,11 @@ import { OPENAI_API_KEY } from './config.js'; // config.js
 
 document.addEventListener("DOMContentLoaded", function() {
 const chatInput = document.querySelector('textarea'); //selecting the textarea for user input
-// const chatBtn = document.querySelector('.chatbtn'); //selecting the button to open the chatbox
+const chatBtn = document.querySelector('.chatbtn'); //selecting the button to open the chatbox
 const sendChatBtn = document.querySelector('#sendBIN'); //selecting the button to send the message
-// const cancelBtn = document.querySelector('.cancelbtn'); //selecting the button to cancel the chat
+const cancelBtn = document.querySelector('.cancelbtn'); //selecting the button to cancel the chat
 const chatbox = document.querySelector('.chatbox'); //selecting the chatbox to display messages
-// const chatboxBtn = document.querySelector('.chatboxbtn'); //selecting the button to open the chatbox
+const chatboxBtn = document.querySelector('.chatboxbtn'); //selecting the button to open the chatbox
 const crossBtn = document.querySelector("#cross");
 
     // Check if elements exist before adding event listeners
@@ -38,37 +38,24 @@ const generateResponse = async (incomingChatLi) => {
             model: "gpt-3.5-turbo",
             messages: [
                 { role: "system", content: "You are a helpful assistant." },
-                { role: "user", content: messageElement.innerHTML }
+                { role: "user", content: messageElement.innerText }
             ]
         })
     };
-    try {
-        const res = await fetch(API_URL, requestOptions);
-        if (!res.ok) throw new Error("Error in response");
-
-        const data = await res.json();
-        messageElement.textContent = data.choices[0].message.content;
-    } catch (error) {
-        console.error("❌ Error fetching response:", error);
-        messageElement.classList.add("error");
-        messageElement.textContent = "Sorry, I could not generate a response.";
-    } finally {
-        chatbox.scrollTo(0, chatbox.scrollHeight);
-    }
-
-    // fetch(API_URL, requestOptions)
-    //     .then(res => {
-    //         if (!res.ok) throw new Error("Error in response");
-    //         return res.json();
-    //     })
-    //     .then(data => {
-    //         messageElement.textContent = data.choices[0].message.content;
-    //     })
-    //     .catch(() => {
-    //         messageElement.classList.add("error");
-    //         messageElement.textContent = "Sorry, I could not generate a response.";
-    //     })
-    //     .finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
+    
+    fetch(API_URL, requestOptions)
+        .then(res => {
+            if (!res.ok) throw new Error("Error in response");
+            return res.json();
+        })
+        .then(data => {
+            messageElement.textContent = data.choices[0].message.content;
+        })
+        .catch(() => {
+            messageElement.classList.add("error");
+            messageElement.textContent = "Sorry, I could not generate a response.";
+        })
+        .finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
 };
 
 // A function to handle sending messages
@@ -77,46 +64,37 @@ const handleChat = () => {
     if (!userMessage) return;
     
     // Append user message to chatbox
-    const chatLi = createChatLi(userMessage, "chat-outgoing");
+    const chatLi = document.createElement('li');
+    chatLi.classList.add("chat", "chat-outgoing");
+    chatLi.innerHTML = `<p>${userMessage}</p>`;
     chatbox.appendChild(chatLi);
     chatbox.scrollTo(0, chatbox.scrollHeight);
     chatInput.value = ""; // Clear input field
 
-    // const chatLi = document.createElement('li');
-    // chatLi.classList.add("chat", "chat-outgoing");
-    // chatLi.innerHTML = `<p>${userMessage}</p>`;
-    // chatbox.appendChild(chatLi);
-    // chatbox.scrollTo(0, chatbox.scrollHeight);
-    // chatInput.value = ""; // Clear input field
-
     // Simulate bot response
     setTimeout(() => {
-        const botReply = createChatLi("Typing...", "chat-incoming");
+        const botReply = document.createElement('li');
+        botReply.classList.add("chat", "chat-incoming");
+        botReply.innerHTML = `<p>Typing...</p>`;
+        chatbox.appendChild(botReply);
+        // const incomingChatLi = createChatLi("Typing...", "chat-incoming");
         chatbox.appendChild(botReply);
         chatbox.scrollTo(0, chatbox.scrollHeight);
-        // Fetch AI Response
         generateResponse(botReply);
     }, 1000);
-
-    // setTimeout(() => {
-    //     const botReply = document.createElement('li');
-    //     botReply.classList.add("chat", "chat-incoming");
-    //     botReply.innerHTML = `<p>Typing...</p>`;
-    //     chatbox.appendChild(botReply);
-    //     // const incomingChatLi = createChatLi("Typing...", "chat-incoming");
-    //     chatbox.appendChild(botReply);
-    //     chatbox.scrollTo(0, chatbox.scrollHeight);
-    //     generateResponse(botReply);
-    // }, 1000);
 };
 
 sendChatBtn.addEventListener('click', handleChat);
+
+
 chatInput.addEventListener('keydown', (e) => {
-    if (e.key === "Enter")
+    if (e.key === "Enter"){
         e.preventDefault(); // Prevents newline
         handleChat();
+    }
 });
 
+// Close chatbox function
 // function cancel() {
 //     let chatbotComplete = document.querySelector('.chatbox');
 //     if (chatbotComplete.style.display === "none") {
@@ -130,7 +108,6 @@ chatInput.addEventListener('keydown', (e) => {
 //     }
 // }
 
-    // Close chatbox function
     crossBtn.addEventListener('click', () => {
         chatbox.innerHTML = ''; // Clear chat messages
         chatInput.value = ''; // Reset input field
