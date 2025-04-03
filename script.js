@@ -2,11 +2,11 @@ import { OPENAI_API_KEY } from './config.js'; // config.js
 
 document.addEventListener("DOMContentLoaded", function() {
 const chatInput = document.querySelector('textarea'); //selecting the textarea for user input
-const chatBtn = document.querySelector('.chatbtn'); //selecting the button to open the chatbox
+// const chatBtn = document.querySelector('.chatbtn'); //selecting the button to open the chatbox
 const sendChatBtn = document.querySelector('#sendBIN'); //selecting the button to send the message
-const cancelBtn = document.querySelector('.cancelbtn'); //selecting the button to cancel the chat
+// const cancelBtn = document.querySelector('.cancelbtn'); //selecting the button to cancel the chat
 const chatbox = document.querySelector('.chatbox'); //selecting the chatbox to display messages
-const chatboxBtn = document.querySelector('.chatboxbtn'); //selecting the button to open the chatbox
+// const chatboxBtn = document.querySelector('.chatboxbtn'); //selecting the button to open the chatbox
 const crossBtn = document.querySelector("#cross");
 // const sendChatBtn = document.querySelector('#sendBIN');
 
@@ -63,24 +63,36 @@ const handleChat = () => {
     if (!userMessage) return;
     
     // Append user message to chatbox
-    const chatLi = document.createElement('li');
-    chatLi.classList.add("chat", "chat-outgoing");
-    chatLi.innerHTML = `<p>${userMessage}</p>`;
+    const chatLi = createChatLi(userMessage, "chat-outgoing");
     chatbox.appendChild(chatLi);
     chatbox.scrollTo(0, chatbox.scrollHeight);
     chatInput.value = ""; // Clear input field
 
+    // const chatLi = document.createElement('li');
+    // chatLi.classList.add("chat", "chat-outgoing");
+    // chatLi.innerHTML = `<p>${userMessage}</p>`;
+    // chatbox.appendChild(chatLi);
+    // chatbox.scrollTo(0, chatbox.scrollHeight);
+    // chatInput.value = ""; // Clear input field
+
     // Simulate bot response
     setTimeout(() => {
-        const botReply = document.createElement('li');
-        botReply.classList.add("chat", "chat-incoming");
-        botReply.innerHTML = `<p>Typing...</p>`;
-        chatbox.appendChild(botReply);
-        // const incomingChatLi = createChatLi("Typing...", "chat-incoming");
+        const botReply = createChatLi("Typing...", "chat-incoming");
         chatbox.appendChild(botReply);
         chatbox.scrollTo(0, chatbox.scrollHeight);
         generateResponse(botReply);
     }, 1000);
+
+    // setTimeout(() => {
+    //     const botReply = document.createElement('li');
+    //     botReply.classList.add("chat", "chat-incoming");
+    //     botReply.innerHTML = `<p>Typing...</p>`;
+    //     chatbox.appendChild(botReply);
+    //     // const incomingChatLi = createChatLi("Typing...", "chat-incoming");
+    //     chatbox.appendChild(botReply);
+    //     chatbox.scrollTo(0, chatbox.scrollHeight);
+    //     generateResponse(botReply);
+    // }, 1000);
 };
 
 sendChatBtn.addEventListener('click', handleChat);
@@ -90,18 +102,18 @@ chatInput.addEventListener('keydown', (e) => {
         handleChat();
 });
 
-function cancel() {
-    let chatbotComplete = document.querySelector('.chatbox');
-    if (chatbotComplete.style.display === "none") {
-        chatbotComplete.style.display = "block";
-        let lastMsg = document.createElement("p");
-        lastMsg.textContent = "Are you sure you want to cancel?";
-        lastMsg.classList.add("lastMessage");
-        document.body.appendChild(lastMsg);
-    } else {
-        chatbotComplete.style.display = "none";
-    }
-}
+// function cancel() {
+//     let chatbotComplete = document.querySelector('.chatbox');
+//     if (chatbotComplete.style.display === "none") {
+//         chatbotComplete.style.display = "block";
+//         let lastMsg = document.createElement("p");
+//         lastMsg.textContent = "Are you sure you want to cancel?";
+//         lastMsg.classList.add("lastMessage");
+//         document.body.appendChild(lastMsg);
+//     } else {
+//         chatbotComplete.style.display = "none";
+//     }
+// }
 function cancel() {
     document.querySelector('.chatbox').innerHTML = '';
     document.querySelector('textarea').value = '';
