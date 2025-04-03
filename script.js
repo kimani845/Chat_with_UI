@@ -15,7 +15,7 @@ const crossBtn = document.querySelector("#cross");
         return;
     }
     
-    // Function to create a chat message element
+    // Function to create a chat message element.
 
 const createChatLi = (message, className) => {
     const chatLi = document.createElement('li');
