@@ -8,13 +8,14 @@ const sendChatBtn = document.querySelector('#sendBIN'); //selecting the button t
 const chatbox = document.querySelector('.chatbox'); //selecting the chatbox to display messages
 // const chatboxBtn = document.querySelector('.chatboxbtn'); //selecting the button to open the chatbox
 const crossBtn = document.querySelector("#cross");
-// const sendChatBtn = document.querySelector('#sendBIN');
 
     // Check if elements exist before adding event listeners
     if (!sendChatBtn || !chatInput || !chatbox) {
         console.error("❌ Error: One or more elements not found. Check your HTML structure.");
         return;
     }
+    
+    // Function to create a chat message element
 
 const createChatLi = (message, className) => {
     const chatLi = document.createElement('li');
@@ -22,8 +23,8 @@ const createChatLi = (message, className) => {
     chatLi.innerHTML = `<p class ='bg-grey-800 text-white p-2 rounded-lg'>${message}</p>`;
     return chatLi;
 };
-
-const generateResponse = (incomingChatLi) => {
+// Function to generate the response using OpenAI API
+const generateResponse = async (incomingChatLi) => {
     const API_URL = "https://api.openai.com/v1/chat/completions";
     const messageElement = incomingChatLi.querySelector('p');
 
@@ -37,24 +38,37 @@ const generateResponse = (incomingChatLi) => {
             model: "gpt-3.5-turbo",
             messages: [
                 { role: "system", content: "You are a helpful assistant." },
-                { role: "user", content: messageElement.innerText }
+                { role: "user", content: messageElement.innerHTML }
             ]
         })
     };
+    try {
+        const res = await fetch(API_URL, requestOptions);
+        if (!res.ok) throw new Error("Error in response");
 
-    fetch(API_URL, requestOptions)
-        .then(res => {
-            if (!res.ok) throw new Error("Error in response");
-            return res.json();
-        })
-        .then(data => {
-            messageElement.textContent = data.choices[0].message.content;
-        })
-        .catch(() => {
-            messageElement.classList.add("error");
-            messageElement.textContent = "Sorry, I could not generate a response.";
-        })
-        .finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
+        const data = await res.json();
+        messageElement.textContent = data.choices[0].message.content;
+    } catch (error) {
+        console.error("❌ Error fetching response:", error);
+        messageElement.classList.add("error");
+        messageElement.textContent = "Sorry, I could not generate a response.";
+    } finally {
+        chatbox.scrollTo(0, chatbox.scrollHeight);
+    }
+
+    // fetch(API_URL, requestOptions)
+    //     .then(res => {
+    //         if (!res.ok) throw new Error("Error in response");
+    //         return res.json();
+    //     })
+    //     .then(data => {
+    //         messageElement.textContent = data.choices[0].message.content;
+    //     })
+    //     .catch(() => {
+    //         messageElement.classList.add("error");
+    //         messageElement.textContent = "Sorry, I could not generate a response.";
+    //     })
+    //     .finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
 };
 
 // A function to handle sending messages
@@ -80,6 +94,7 @@ const handleChat = () => {
         const botReply = createChatLi("Typing...", "chat-incoming");
         chatbox.appendChild(botReply);
         chatbox.scrollTo(0, chatbox.scrollHeight);
+        // Fetch AI Response
         generateResponse(botReply);
     }, 1000);
 
@@ -114,8 +129,10 @@ chatInput.addEventListener('keydown', (e) => {
 //         chatbotComplete.style.display = "none";
 //     }
 // }
-function cancel() {
-    document.querySelector('.chatbox').innerHTML = '';
-    document.querySelector('textarea').value = '';
-}
+
+    // Close chatbox function
+    crossBtn.addEventListener('click', () => {
+        chatbox.innerHTML = ''; // Clear chat messages
+        chatInput.value = ''; // Reset input field
+    });
 });   
