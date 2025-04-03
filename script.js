@@ -1,6 +1,5 @@
 import { OPENAI_API_KEY } from './config.js'; // config.js
-import OpenAI from "openai";
-const client = new OpenAI();
+
 document.addEventListener("DOMContentLoaded", function() {
 const chatInput = document.querySelector('textarea'); //selecting the textarea for user input
 const chatBtn = document.querySelector('.chatbtn'); //selecting the button to open the chatbox
@@ -8,6 +7,7 @@ const sendChatBtn = document.querySelector('#sendBIN'); //selecting the button t
 const cancelBtn = document.querySelector('.cancelbtn'); //selecting the button to cancel the chat
 const chatbox = document.querySelector('.chatbox'); //selecting the chatbox to display messages
 const chatboxBtn = document.querySelector('.chatboxbtn'); //selecting the button to open the chatbox
+const crossBtn = document.querySelector("#cross");
 // const sendChatBtn = document.querySelector('#sendBIN');
 
     // Check if elements exist before adding event listeners
@@ -16,12 +16,10 @@ const chatboxBtn = document.querySelector('.chatboxbtn'); //selecting the button
         return;
     }
 
-const apiKey = 'OPENAI_API_KEY '; //API KEY 
-
 const createChatLi = (message, className) => {
     const chatLi = document.createElement('li');
-    chatLi.classList.add("chat", className);
-    chatLi.innerHTML = `<p>${message}</p>`;
+    chatLi.classList.add("chat", className, 'flex', 'justify-start', 'items-center', 'gap-2', 'p-2', 'rounded-lg', 'mb-2');
+    chatLi.innerHTML = `<p class ='bg-grey-800 text-white p-2 rounded-lg'>${message}</p>`;
     return chatLi;
 };
 
@@ -59,7 +57,7 @@ const generateResponse = (incomingChatLi) => {
         .finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
 };
 
-// A function to handle sendind of messages
+// A function to handle sending messages
 const handleChat = () => {
     let userMessage = chatInput.value.trim();
     if (!userMessage) return;
@@ -70,10 +68,9 @@ const handleChat = () => {
     chatLi.innerHTML = `<p>${userMessage}</p>`;
     chatbox.appendChild(chatLi);
     chatbox.scrollTo(0, chatbox.scrollHeight);
-    chatInput.value = "";
+    chatInput.value = ""; // Clear input field
 
     // Simulate bot response
-
     setTimeout(() => {
         const botReply = document.createElement('li');
         botReply.classList.add("chat", "chat-incoming");
@@ -88,7 +85,9 @@ const handleChat = () => {
 
 sendChatBtn.addEventListener('click', handleChat);
 chatInput.addEventListener('keydown', (e) => {
-    if (e.key === "Enter") handleChat();
+    if (e.key === "Enter")
+        e.preventDefault(); // Prevents newline
+        handleChat();
 });
 
 function cancel() {
@@ -102,5 +101,9 @@ function cancel() {
     } else {
         chatbotComplete.style.display = "none";
     }
+}
+function cancel() {
+    document.querySelector('.chatbox').innerHTML = '';
+    document.querySelector('textarea').value = '';
 }
 });   
