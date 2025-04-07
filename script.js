@@ -66,7 +66,7 @@ const generateResponse = (incomingChatLi) => {
     const messageElement = incomingChatLi.querySelector('p');
     const apiKey = API_KEY; // Make sure the API_KEY is correct and imported
 
-    const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + apiKey;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
     const requestBody = {
         contents: [{
