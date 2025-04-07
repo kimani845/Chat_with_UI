@@ -1,4 +1,8 @@
-import { OPENAI_API_KEY } from './config.js'; // config.js
+import { API_KEY } from './config.js'; // config.js
+// import { GoogleGenAI } from "https://path/to/google/genai.js";
+// import { GoogleGenAI } from "@google/genai";
+// import { GoogleGenerativeAI } from "@google/generative-ai";
+
 
 document.addEventListener("DOMContentLoaded", function() {
 const chatInput = document.querySelector('textarea'); //selecting the textarea for user input
@@ -23,40 +27,81 @@ const createChatLi = (message, className) => {
     chatLi.innerHTML = `<p class ='bg-grey-800 text-white p-2 rounded-lg'>${message}</p>`;
     return chatLi;
 };
-// Function to generate the response using OpenAI API
-const generateResponse = async (incomingChatLi) => {
-    const API_URL = "https://api.openai.com/v1/chat/completions";
-    const messageElement = incomingChatLi.querySelector('p');
 
-    const requestOptions = {
+// Initialize the GoogleGenAI instance with Google API key
+// const ai = new GoogleGenAI({ apiKey: "API_KEY" });
+
+// Function to generate the response using GoogleGenAI API
+// const generateResponse = (incomingChatLi) => {
+//     const messageElement = incomingChatLi.querySelector('p');  // Get user's message
+
+//     if (!messageElement) {
+//         console.error('Message element not found');
+//         return; // If no message element, exit the function
+//     }
+
+//     // generate a response
+//     ai.models.generateContent({
+//         model: "gemini-2.0-flash",  
+//         contents: messageElement.innerText  // user's message
+//     })
+//     .then(response => {
+//         // On success, update the message with the response text from Gemini
+//         messageElement.textContent = response.text;
+//     })
+//     .catch((error) => {
+//         // If there's an error, update the message with an error message
+//         messageElement.classList.add("error");
+//         messageElement.textContent = "Sorry, I could not generate a response.";
+//     })
+//     .finally(() => {
+//         // Scroll the chatbox to the latest message
+//         const chatbox = document.querySelector('.chatbox');
+//         if (chatbox) {
+//             chatbox.scrollTo(0, chatbox.scrollHeight);
+//         }
+//     });
+// };
+const generateResponse = (incomingChatLi) => {
+    const messageElement = incomingChatLi.querySelector('p');
+    const apiKey = API_KEY; // Make sure the API_KEY is correct and imported
+
+    const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + apiKey;
+
+    const requestBody = {
+        contents: [{
+            parts: [{
+                text: messageElement.innerText
+            }]
+        }]
+    };
+
+    fetch(url, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${OPENAI_API_KEY}`
+            "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-            model: "gpt-3.5-turbo",
-            messages: [
-                { role: "system", content: "You are a helpful assistant." },
-                { role: "user", content: messageElement.innerText }
-            ]
-        })
-    };
-    
-    fetch(API_URL, requestOptions)
-        .then(res => {
-            if (!res.ok) throw new Error("Error in response");
-            return res.json();
-        })
-        .then(data => {
-            messageElement.textContent = data.choices[0].message.content;
-        })
-        .catch(() => {
+        body: JSON.stringify(requestBody)
+    })
+    .then(res => res.json())
+    .then(data => {
+        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (responseText) {
+            messageElement.textContent = responseText;
+        } else {
             messageElement.classList.add("error");
-            messageElement.textContent = "Sorry, I could not generate a response.";
-        })
-        .finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
+            messageElement.textContent = "❌ Could not get a valid response.";
+        }
+    })
+    .catch(() => {
+        messageElement.classList.add("error");
+        messageElement.textContent = "Sorry, I could not generate a response.";
+    })
+    .finally(() => {
+        document.querySelector('.chatbox').scrollTo(0, chatbox.scrollHeight);
+    });
 };
+
 
 // A function to handle sending messages
 const handleChat = () => {
