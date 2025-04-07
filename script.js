@@ -110,8 +110,8 @@ const handleChat = () => {
     
     // Append user message to chatbox
     const chatLi = document.createElement('li');
-    chatLi.classList.add("chat", "chat-outgoing");
-    chatLi.innerHTML = `<p>${userMessage}</p>`;
+    chatLi.classList.add("chat", "chat-outgoing", "flex", "justify-start", "items-center", "gap-2", "p-2", "rounded-lg", "mb-2");
+    chatLi.innerHTML = `<p class="bg-blue-500 text-white p-2 rounded-lg">${userMessage}</p>`; // Blue background for user message
     chatbox.appendChild(chatLi);
     chatbox.scrollTo(0, chatbox.scrollHeight);
     chatInput.value = ""; // Clear input field
@@ -119,8 +119,8 @@ const handleChat = () => {
     // Simulate bot response
     setTimeout(() => {
         const botReply = document.createElement('li');
-        botReply.classList.add("chat", "chat-incoming");
-        botReply.innerHTML = `<p>Typing...</p>`;
+        botReply.classList.add("chat", "chat-incoming", "flex", "justify-start", "items-center", "gap-2", "p-2", "rounded-lg", "mb-2");
+        botReply.innerHTML = `<p class="bg-gray-300 text-black p-2 rounded-lg">Typing...</p>`; // Default text while bot is typing
         chatbox.appendChild(botReply);
         // const incomingChatLi = createChatLi("Typing...", "chat-incoming");
         chatbox.appendChild(botReply);
