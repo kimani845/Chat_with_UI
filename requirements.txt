@@ -1,0 +1,4 @@
+npm install -g liveserver
+npm install @google/genai
+npm install webpack webpack-cli @google/genai --save-dev
+npm install @google/generative-ai
